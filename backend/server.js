@@ -3,6 +3,7 @@ const app = express();
 require('dotenv').config();
 const {initDatabase} = require('./controllers/initDb.js');
 const dp = require('./models/connection.js');
+const cors = require('cors');
 
 
 initDatabase();
@@ -12,7 +13,9 @@ PORT = process.env.PORT;
 app.use(express.urlencoded({extended: false}));
 app.use(express.json());
 
-
+app.use(cors({
+  origin: 'http://localhost:5173'
+}));
 
 
 // 1. Verify Connection (Method: GET, Endpoint: /)
