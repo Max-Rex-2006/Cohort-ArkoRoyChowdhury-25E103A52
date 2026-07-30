@@ -53,16 +53,16 @@ app.get('/users', async (req, res) => {
 // 3. Create User (Method: POST, Endpoint: /user)
 app.post('/user', async (req, res) => {
     // Adds a new user to the database
-    const { id, name, email, password } = req.body;
+    const { id, name, registration_no, email, password, age } = req.body;
 
     const createUserQuery = `
-        INSERT INTO users (name, email, password)
-        VALUES ($1, $2, $3)
-        RETURNING id, name, email;
+        INSERT INTO users (name, registration_no, email, password, age)
+        VALUES ($1, $2, $3, $4, $5)
+        RETURNING id, name, registration_no, email, age;
     `;
     try {
         const result = await dp.query(createUserQuery, [
-            name, email, password
+            name, registration_no, email, password, age
         ]);
 
         // Success response 
