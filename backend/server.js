@@ -92,7 +92,44 @@ app.post('/login', async (req, res) => {
         WHERE name = $1 AND password = $2;
     `;
 
-    
+    try {
+        const result = await dp.query(loginQuery, [name, password]);
+
+        // Check if the user exists in the database
+        if (result.rows.length === 0) {
+            return res.status(401).json({
+                status: "error",
+                message: "Invalid credentials"
+            });
+        }
+
+        const user = result.rows[0];
+
+        // Check if the incoming password matches the database password
+        if (user.password !== password) {
+            return res.status(401).json({
+                status: "error",
+                message: "Invalid credentials"
+            });
+        }
+
+        // Remove the password property before sending user details back for security
+        delete user.password;
+
+        // Success response containing matching hand-written formatting
+        res.status(200).json({
+            status: "success",
+            message: "Login successful",
+            data: user
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            status: "error",
+            message: "An error occurred during login",
+            error: error.message || error
+        });
+    }
 });
   
 app.listen(process.env.PORT, (err) => {
