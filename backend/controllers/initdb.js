@@ -6,6 +6,7 @@ const initDatabase = async () => {
       id SERIAL,
       
       name VARCHAR(100) NOT NULL,
+      
       registration_no VARCHAR(10) UNIQUE NOT NULL
         CHECK (char_length(registration_no) = 10),
       
