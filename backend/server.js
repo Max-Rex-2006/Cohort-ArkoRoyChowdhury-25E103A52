@@ -20,7 +20,7 @@ app.get('/', (req, res) => {
     //Verifies the successful connection to the server and returns a welcome message
   res.status(200).json({
     status: "success",
-    message: "Welcome to home page"
+    message: "Welcome to Home Page"
   })
 });
 
@@ -53,16 +53,16 @@ app.get('/users', async (req, res) => {
 // 3. Create User (Method: POST, Endpoint: /user)
 app.post('/user', async (req, res) => {
     // Adds a new user to the database
-    const { id, username, email, password } = req.body;
+    const { id, name, email, password } = req.body;
 
     const createUserQuery = `
-        INSERT INTO users (username, email, password)
+        INSERT INTO users (name, email, password)
         VALUES ($1, $2, $3)
-        RETURNING id, username, email;
+        RETURNING id, name, email;
     `;
     try {
         const result = await dp.query(createUserQuery, [
-            username, email, password
+            name, email, password
         ]);
 
         // Success response 
@@ -82,7 +82,7 @@ app.post('/user', async (req, res) => {
 
 // 4. Verify Login (Method: POST, Endpoint: /login)
 app.post('/login', async (req, res) => {
-    // Fetches a user based on the provided username and password for login
+    // Fetches a user based on the provided name and password for login
     const { name, password } = req.body;
 
     // Validate that both username and password are provided
