@@ -1,0 +1,316 @@
+/* ==========================================
+   ROYAL GLASSMORPHISM REGISTER FORM
+   ========================================== */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family: "Segoe UI", sans-serif;
+
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    overflow:hidden;
+
+    background:
+        radial-gradient(circle at top left,#6d5dfc 0%,transparent 35%),
+        radial-gradient(circle at bottom right,#3b82f6 0%,transparent 35%),
+        linear-gradient(135deg,#0d1328,#161d42,#21174b);
+
+    color:white;
+}
+
+/* Decorative blurred blobs */
+
+body::before,
+body::after{
+
+    content:"";
+    position:absolute;
+    width:320px;
+    height:320px;
+    border-radius:50%;
+    filter:blur(90px);
+    opacity:.28;
+    z-index:-1;
+}
+
+body::before{
+    top:-100px;
+    left:-100px;
+    background:#7c3aed;
+}
+
+body::after{
+    bottom:-100px;
+    right:-80px;
+    background:#2563eb;
+}
+
+
+/* ====================================
+      CARD
+==================================== */
+.page{
+    width:100%;
+    min-height:100vh;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.register-form{
+
+    width:100%;
+    max-width:430px;
+
+    padding:45px 40px;
+
+    border-radius:24px;
+
+    background:rgba(255,255,255,.06);
+
+    backdrop-filter:blur(18px);
+    -webkit-backdrop-filter:blur(18px);
+
+    border:1px solid rgba(255,255,255,.12);
+
+    box-shadow:
+        0 30px 60px rgba(0,0,0,.35),
+        inset 0 0 0 1px rgba(255,255,255,.05);
+
+    position:relative;
+}
+
+
+/* Golden border glow */
+
+.register-form::before{
+
+    content:"";
+
+    position:absolute;
+    inset:0;
+
+    border-radius:24px;
+
+    padding:1px;
+
+    background:
+    linear-gradient(
+        135deg,
+        rgba(255,215,120,.75),
+        rgba(255,255,255,0),
+        rgba(255,215,120,.45)
+    );
+
+    -webkit-mask:
+        linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
+
+    -webkit-mask-composite:xor;
+            mask-composite:exclude;
+
+    pointer-events:none;
+}
+
+
+/* ============================
+        HEADING
+============================ */
+
+.form-heading{
+
+    text-align:center;
+
+    font-size:30px;
+
+    font-weight:700;
+
+    margin-bottom:32px;
+
+    background:linear-gradient(
+        90deg,
+        #ffffff,
+        #dbeafe,
+        #ffd86b
+    );
+
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+}
+
+
+/* ============================
+          FORM
+============================ */
+
+.form{
+
+    display:flex;
+    flex-direction:column;
+
+    gap:18px;
+}
+
+
+/* ============================
+        INPUTS
+============================ */
+
+.form input{
+
+    width:100%;
+
+    padding:14px 18px;
+
+    border-radius:14px;
+
+    border:1px solid rgba(255,255,255,.15);
+
+    background:rgba(255,255,255,.05);
+
+    color:white;
+
+    outline:none;
+
+    backdrop-filter:blur(10px);
+
+    transition:.35s ease;
+}
+
+.form input::placeholder{
+
+    color:rgba(255,255,255,.55);
+}
+
+
+.form input:hover{
+
+    background:rgba(255,255,255,.08);
+
+    border-color:rgba(255,215,120,.45);
+}
+
+
+.form input:focus{
+
+    background:rgba(255,255,255,.09);
+
+    border-color:#ffd86b;
+
+    box-shadow:
+        0 0 0 3px rgba(255,215,120,.12),
+        0 0 18px rgba(255,215,120,.18);
+}
+
+
+/* Remove spinner */
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button{
+    -webkit-appearance:none;
+    margin:0;
+}
+
+input[type=number]{
+    -moz-appearance:textfield;
+}
+
+
+/* ============================
+        BUTTON
+============================ */
+
+button{
+
+    margin-top:10px;
+
+    padding:14px;
+
+    border:none;
+
+    border-radius:14px;
+
+    cursor:pointer;
+
+    color:white;
+
+    font-size:15px;
+
+    font-weight:600;
+
+    letter-spacing:.5px;
+
+    background:
+    linear-gradient(
+        135deg,
+        #6d5dfc,
+        #4f46e5,
+        #3b82f6
+    );
+
+    box-shadow:
+        0 12px 30px rgba(59,130,246,.25);
+
+    transition:.35s;
+}
+
+button:hover{
+
+    transform:translateY(-3px);
+
+    box-shadow:
+        0 18px 35px rgba(59,130,246,.35);
+
+    background:
+    linear-gradient(
+        135deg,
+        #7c6dff,
+        #5b4df7,
+        #4a90ff
+    );
+}
+
+button:active{
+
+    transform:scale(.98);
+}
+
+
+/* ============================
+      RESPONSIVE
+============================ */
+
+@media(max-width:480px){
+
+    .register-form{
+
+        width:95%;
+        padding:35px 25px;
+    }
+
+    .form-heading{
+
+        font-size:25px;
+    }
+}
+
+
+/* ============================
+    REDUCED MOTION
+============================ */
+
+@media(prefers-reduced-motion:reduce){
+
+*{
+    transition:none!important;
+}
+}
