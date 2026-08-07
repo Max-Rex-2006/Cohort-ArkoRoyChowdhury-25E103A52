@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const dp = require('../models/connection.js');
 
-// Update Profile (Method: PATCH, Endpoint: /profile)
+// Update Profile (Method: PATCH, Permission: User, Endpoint: /profile)
 router.patch('/', async (req, res) => {
     // 1. Extract credentials for verification + allowed fields for modification
     const { currentEmail, currentPassword, email, password, age } = req.body;
@@ -66,7 +66,7 @@ router.patch('/', async (req, res) => {
     }
 });
 
-//Delete Profile (Method: DELETE, Endpoint: /profile)
+// Delete Profile (Method: DELETE, Permission: User, Endpoint: /profile)
 router.delete('/', async (req, res) => {
     // Extract email and password from request body for identity verification
     const { email, password } = req.body;

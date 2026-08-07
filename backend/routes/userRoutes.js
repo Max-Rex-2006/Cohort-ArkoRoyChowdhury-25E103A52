@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const dp = require('../models/connection.js');
 
-// Fetch Users (Method: GET, Endpoint: /users)
+// Fetch Users (Method: GET, Permission: Admin, Endpoint: /users)
 router.get('/', async (req, res) => {
     //Fetches all users and their info
   const checkColumnsQuery = `
@@ -28,6 +28,10 @@ router.get('/', async (req, res) => {
   }
 });
 
-router.get('/profile', async (req, res) => {});
+// Get profile Data (Method: GET, Permission: User, Endpoint: /users/profile)
+router.get('/profile', async (req, res) => {
+    // Fetches user info
+    
+});
 
 module.exports = router;
