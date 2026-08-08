@@ -8,8 +8,9 @@ app.use(cors({
 }));
 
 
-const {initDatabase} = require('./controllers/initDb.js');
-initDatabase();
+const {inituserDatabase} = require('./config/initDb.js');
+inituserDatabase();
+initprojectDatabase();
 
 PORT = process.env.PORT;
 
@@ -29,9 +30,6 @@ app.get('/', (req, res) => {
 
 const authRoutes = require('./routes/authRoutes');
 app.use('/api/auth', authRoutes);
-
-const profileRoutes = require('./routes/profileRoutes.js');
-app.use('/api/profile', profileRoutes);
 
 const projectRoutes = require('./routes/projectRoutes');
 app.use('/api/projects', projectRoutes);

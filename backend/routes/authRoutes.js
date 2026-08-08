@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const dp = require('../models/connection.js');
+const dp = require('../config/connection.js');
 
 // Create User (Method: POST, Permission: Public, Endpoint: /register)
 router.post('/register', async (req, res) => {

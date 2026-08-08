@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const dp = require('../models/connection.js');
+const dp = require('../config/connection.js');
 
 // Get All Projects (Method: GET, Permission: User, Endpoint: /projects)
 router.get('/', async (req, res) => {
