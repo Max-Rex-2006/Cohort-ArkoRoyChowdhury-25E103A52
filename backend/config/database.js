@@ -14,14 +14,13 @@ const initExtensions = async () => {
 
 // function to initialize the user database
 const initUserDatabase = async () => {
-  await initExtensions(); // Ensure extensions are initialized before creating tables
   
   const createTableQuery = `
     CREATE TABLE IF NOT EXISTS users (
       id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
       
-      username VARCHAR(100) UNIQUE NOT NULL,
-        CHECK(char_length(username)>=3)
+      username VARCHAR(100) UNIQUE NOT NULL
+        CHECK(char_length(username)>=3),
 
       member_id VARCHAR(7) UNIQUE NOT NULL,
       
@@ -88,7 +87,6 @@ const initUserDatabase = async () => {
 
 // function to initialize the project database
 const initProjectDatabase = async () => {
-  await initExtensions(); // Ensure extensions are initialized before creating tables
   
   const createTableQuery = `
     CREATE TABLE IF NOT EXISTS projects (
@@ -118,7 +116,6 @@ const initProjectDatabase = async () => {
 
 // function to initialize the task database
 const initTaskDatabase = async () => {
-  await initExtensions(); // Ensure extensions are initialized before creating tables
   
   const createTableQuery = `
     CREATE TABLE IF NOT EXISTS tasks (
@@ -128,8 +125,8 @@ const initTaskDatabase = async () => {
       
       description TEXT,
 
-      status VARCHAR(255) NOT NULL,
-        CHECK(status IN ('To Do','In Progress','Done'))
+      status VARCHAR(255) NOT NULL DEFAULT 'To Do'
+        CHECK(status IN ('To Do','In Progress','Done')),
       
       project_id UUID NOT NULL,
       FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE,
@@ -155,8 +152,46 @@ const initTaskDatabase = async () => {
   }
 };
 
+// function to initialize the project_members database
+const initProjectMembersDatabase = async () => {
+
+  const createTableQuery = `
+    CREATE TABLE IF NOT EXISTS project_members (
+      id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+      
+      project_id UUID NOT NULL,
+      FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE,
+      
+      user_id UUID NOT NULL,
+      FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+      
+      role VARCHAR(50) NOT NULL,
+        CHECK(role IN ('admin', 'member')),
+      
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      
+      UNIQUE(project_id, user_id)
+    );
+  `;
+
+  try {
+    await query(createTableQuery);
+    console.log("Table created successfully");
+  } catch (error) {
+    console.log(error);
+    process.exit(1);
+  }
+};
+
+//function to initialize all databases
+const initDatabases = async () => {
+  await initExtensions(); // Ensure extensions are initialized before creating tables
+  await initUserDatabase(); // Initialize the user database
+  await initProjectDatabase(); // Initialize the project database
+  await initTaskDatabase(); // Initialize the task database
+  await initProjectMembersDatabase(); // Initialize the project_members database
+};
+
 module.exports = {
-  initUserDatabase,
-  initProjectDatabase,
-  initTaskDatabase,
+  initDatabases,
 };

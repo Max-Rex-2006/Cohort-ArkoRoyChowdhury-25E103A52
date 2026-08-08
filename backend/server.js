@@ -7,12 +7,18 @@ app.use(cors({
   origin: 'http://localhost:5173'
 }));
 
+// Import the initDatabases function from initDb.js
+const {initDatabases} = require('./config/database.js');
+// Initialize all databases before starting the server
+try {
+  await initDatabases();
+  console.log("✅ All databases initialized successfully");
+} catch (error) {
+  console.error("❌ Database initialization failed:", error);
+  process.exit(1);
+}
 
-const {inituserDatabase} = require('./config/initDb.js');
-inituserDatabase();
-initprojectDatabase();
-
-PORT = process.env.PORT;
+const PORT = process.env.PORT;
 
 app.use(express.urlencoded({extended: false}));
 app.use(express.json());
@@ -48,4 +54,4 @@ app.listen(process.env.PORT, (err) => {
   if(err) console.log(err);
 
       console.log(`Server is running on port ${PORT}`);
-})
+});
