@@ -1,28 +1,35 @@
-const express = require('express');
-const app = express();
 require('dotenv').config();
 
+const express = require('express');
 const cors = require('cors');
+
+// Defining the Express application
+const app = express();
+
+// Check if PORT is defined in the environment variables
+const PORT = process.env.PORT;
+if(!PORT){
+    console.error("PORT missing in .env");
+    process.exit(1);
+}
+
+// Import the initDatabases function from database.js
+const {initDatabases} = require('./config/database.js');
+
+
+// Connections:
+
+// Enable CORS Middleware for requests from http://localhost:5173
 app.use(cors({
   origin: 'http://localhost:5173'
 }));
-
-// Import the initDatabases function from initDb.js
-const {initDatabases} = require('./config/database.js');
-// Initialize all databases before starting the server
-try {
-  await initDatabases();
-  console.log("✅ All databases initialized successfully");
-} catch (error) {
-  console.error("❌ Database initialization failed:", error);
-  process.exit(1);
-}
-
-const PORT = process.env.PORT;
-
-app.use(express.urlencoded({extended: false}));
+// Checks and parses incoming requests with JSON payloads and is based on body-parser.
 app.use(express.json());
+// Checks and parses incoming requests with URL-encoded payloads and is based on body-parser.
+app.use(express.urlencoded({extended: false}));
 
+
+// Routes:
 
 // Verify Connection (Method: GET, Endpoint: /)
 app.get('/', (req, res) => {
@@ -48,10 +55,20 @@ app.use('/api/users', userRoutes);
 
 
 
+// Initialize all databases before starting the server
+const startServer = async () => {
+  try {
+    await initDatabases();
+    console.log("✅ Databases ready");
+    
+    app.listen(PORT, () => {
+      console.log(`✅ Server running on port ${PORT}`);
+    });
+  } catch (error) {
+    console.error("❌ Startup failed:", error);
+    process.exit(1);
+  }
+};
 
-// Connecting to the port and starting the server
-app.listen(process.env.PORT, (err) => {
-  if(err) console.log(err);
-
-      console.log(`Server is running on port ${PORT}`);
-});
+// Connecting to the port and starting the server after initializing the databases
+startServer();
