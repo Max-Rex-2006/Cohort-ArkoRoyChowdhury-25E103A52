@@ -192,6 +192,4 @@ const initDatabases = async () => {
   await initProjectMembersDatabase(); // Initialize the project_members database
 };
 
-module.exports = {
-  initDatabases,
-};
+module.exports = {initDatabases};
