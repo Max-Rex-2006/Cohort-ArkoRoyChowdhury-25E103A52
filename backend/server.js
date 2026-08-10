@@ -2,6 +2,7 @@ require('dotenv').config();
 
 const express = require('express');
 const cors = require('cors');
+const cookieParser = require('cookie-parser');
 
 // Defining the Express application
 const app = express();
@@ -21,12 +22,15 @@ const {initDatabases} = require('./config/database.js');
 
 // Enable CORS Middleware for requests from http://localhost:5173
 app.use(cors({
-  origin: 'http://localhost:5173'
+  origin: 'http://localhost:5173', // Allow requests from this origin
+  credentials: true // Allow cookies to be sent with requests
 }));
 // Checks and parses incoming requests with JSON payloads and is based on body-parser.
 app.use(express.json());
 // Checks and parses incoming requests with URL-encoded payloads and is based on body-parser.
 app.use(express.urlencoded({extended: false}));
+// Parses cookies attached to the client request object, allowing access to cookie values.
+app.use(cookieParser());
 
 
 // Routes:
