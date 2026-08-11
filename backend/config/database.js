@@ -31,6 +31,9 @@ const initUserDatabase = async () => {
       age INTEGER
         CHECK (age >= 16 AND age <= 65),
       
+      role VARCHAR(20) NOT NULL DEFAULT 'user'
+        CHECK(role IN ('admin', 'user')),
+      
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       
       updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
