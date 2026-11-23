@@ -55,7 +55,7 @@ router.post("/login", async (req, res) => {
 
     // Query to find the user by their username
     const loginQuery = `
-        SELECT id, username, member_id, email, password_hash, age 
+        SELECT id, username, member_id, email, password_hash, age, role
         FROM users 
         WHERE username = $1;
     `;
@@ -89,6 +89,7 @@ router.post("/login", async (req, res) => {
                 id: user.id,
                 username: user.username,
                 member_id: user.member_id,
+                role: user.role,
             },
             process.env.JWT_SECRET,
             {

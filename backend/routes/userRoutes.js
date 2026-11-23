@@ -5,10 +5,10 @@ const bcrypt = require('bcrypt');
 const { authenticateToken, requireAdmin } = require('../middleware/authMiddleware.js');
 
 // Fetch Users (Method: GET, Permission: Admin, Endpoint: /users)
-router.get('/', async (req, res) => {
+router.get('/', authenticateToken, requireAdmin, async (req, res) => {
     //Fetches all users and their info
   const checkColumnsQuery = `
-    SELECT *  
+    SELECT id, username, member_id, email, age, role
     FROM users;
   `;
   
@@ -30,53 +30,15 @@ router.get('/', async (req, res) => {
   }
 });
 
+// Import the getProfile function from the userController.js file
+const {
+    getProfile
+} = require('../controllers/userController.js');
 // Get profile (Method: GET, Permission: User, Endpoint: /users/profile)
-router.get('/profile', authenticateToken, requireAdmin, async (req, res) => {
-    // Extract user ID from the authenticated token
-    const userID = req.user?.id; 
-
-    // Validate that user ID is provided
-    if (!userID) {
-        return res.status(400).json({
-            status: "error",
-            message: "User ID is required"
-        });
-    }
-
-    const checkDetailsQuery = `
-        SELECT id, username, member_id, email, age
-        FROM users
-        WHERE id = $1;
-    `;
-
-    try {
-        const result = await dp.query(checkDetailsQuery, [userID]);
-    
-        // Check if the user exists in the database
-        if (result.rows.length === 0) {
-            return res.status(404).json({
-                status: "error",
-                message: "User not found"
-            });
-        }
-    
-        const user = result.rows[0];
-
-        // Success response 
-        res.status(200).json({
-            status: "success",
-            message: "Profile retrieved successfully",
-            data: user
-        });
-
-    } catch (error) {
-        res.status(500).json({
-            status: "error",
-            message: "An error occurred during profile check",
-            error: error.message || error
-        });
-    }
-});
+router.get('/profile', 
+            authenticateToken, 
+            getprofile
+);
 
 // Update Profile (Method: PATCH, Permission: User, Endpoint: /users/profile)
 router.patch('/profile', authenticateToken, async (req, res) => {
@@ -118,6 +80,30 @@ router.patch('/profile', authenticateToken, async (req, res) => {
             return res.status(401).json({
                 status: "error",
                 message: "Invalid credentials. Profile modification unauthorized."
+            });
+        }
+
+        // Basic validation to check if new password is empty
+        if (password !== undefined && password.length === 0) {
+            return res.status(400).json({
+            status: "error",
+            message: "New password cannot be empty."
+            });
+        }
+
+        // Basic validation to check if new email is empty
+        if (email !== undefined && email.length === 0) {
+            return res.status(400).json({
+            status: "error",
+            message: "New email cannot be empty."
+            });
+        }
+
+        // Basic validation to check if new age is within the allowed range
+        if (age !== undefined && (age < 16 || age > 65)) {
+            return res.status(400).json({
+                status: "error",
+                message: "New age is out of the allowed range (16-65)."
             });
         }
 

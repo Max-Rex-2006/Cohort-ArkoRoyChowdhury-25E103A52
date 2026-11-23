@@ -83,8 +83,8 @@ router.post('/create', authenticateToken, async (req, res) => {
     let client;
 
     try {
-        // Get a client from the pool
-        const client = await dp.connect();
+        // Use the database connection pool to get the client connection
+        client = await dp.connect();
 
         //Begin a transaction to ensure both project creation and role assignment are atomic
         await client.query('BEGIN');

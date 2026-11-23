@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const dp = require('../config/connection.js');
+const { authenticateToken, requireProjectMember } = require('../middleware/authMiddleware.js');
 
 //Creates a new task (Permission: Project member, Method: POST, Endpoint: /tasks/create)
-router.post('/create', async (req, res) => {
+router.post('/create/:projectId', authenticateToken, requireProjectMember, async (req, res) => {
     // Extract project ID from the request parameters
     const { projectId } = req.params;
 
@@ -27,10 +28,10 @@ router.post('/create', async (req, res) => {
         const tasksResult = await dp.query(createTaskQuery, [title, description, projectId]);
 
         // Success response 
-        res.status(200).json({
+        res.status(201).json({
             status: "success",
             message: "Task created successfully",
-            data: tasksResult.rows
+            data: tasksResult.rows[0]
         });
     } catch (error) {
         res.status(500).json({
@@ -42,7 +43,7 @@ router.post('/create', async (req, res) => {
 });
 
 //Updates an existing task (Permission: Project member, Method: PUT, Endpoint: /tasks/:taskID)
-router.put('/:taskID', async (req, res) => {
+router.put('/:projectId/tasks/:taskID', authenticateToken, requireProjectMember, async (req, res) => {
     const { taskID } = req.params;
 
     // Basic validation to check if task ID is available
@@ -54,6 +55,14 @@ router.put('/:taskID', async (req, res) => {
     }
 
     const { title, description } = req.body;
+
+    // Basic validation to check if task title and description are provided
+    if (!title || !description) {
+        return res.status(400).json({
+            status: "error",
+            message: "Task title and description are required."
+        });
+    }
 
     // Query to update the existing task
     const updateTaskQuery = ` UPDATE tasks
@@ -77,7 +86,7 @@ router.put('/:taskID', async (req, res) => {
         res.status(200).json({
             status: "success",
             message: "Task updated successfully",
-            data: tasksResult.rows
+            data: tasksResult.rows[0]
         });
     } catch (error) {
         res.status(500).json({
