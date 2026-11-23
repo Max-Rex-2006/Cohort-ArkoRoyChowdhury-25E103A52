@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 const express = require("express");
 const router = express.Router();
 const dp = require("../config/connection.js");
@@ -124,3 +125,20 @@ router.post("/login", async (req, res) => {
 });
 
 module.exports = router;
+=======
+const express = require("express");
+const router = express.Router();
+
+const {
+    registerUser,
+    loginUser
+} = require("../controllers/authController.js");
+
+// Register User
+router.post("/register", registerUser);
+
+// Login User
+router.post("/login", loginUser);
+
+module.exports = router;
+>>>>>>> 64c69a2fc9be78be473251e63e8c2435b181c3b4
