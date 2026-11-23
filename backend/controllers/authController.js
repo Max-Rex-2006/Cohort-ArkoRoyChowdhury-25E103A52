@@ -12,11 +12,6 @@ const registerUser = async (req, res) => {
 // Adds a new user to the database
     const { username, email, password, age } = req.body;
 
-    const registerQuery = `
-        INSERT INTO users (username, email, password_hash, age)
-        VALUES ($1, $2, $3, $4)
-        RETURNING username, member_id, email, age;
-    `;
     try {
         // Hash the password before storing it
         const hashedPassword = await bcrypt.hash(password, 10);
@@ -32,7 +27,7 @@ const registerUser = async (req, res) => {
         res.status(201).json({
             status: "Success",
             message: "User created successfully",
-            data: result.rows[0],
+            data: result,
         });
     } catch (error) {
         res.status(500).json({
@@ -60,25 +55,17 @@ const loginUser = async (req, res) => {
         });
     }
 
-    // Query to find the user by their username
-    const loginQuery = `
-        SELECT id, username, member_id, email, password_hash, age, role
-        FROM users 
-        WHERE username = $1;
-    `;
-
     try {
-        const result = await dp.query(loginQuery, [username]);
+        // Fetch user details through the Model
+        const user = await authModel.findUserByUsername(username);
 
-        // Check if the user exists in the database
-        if (result.rows.length === 0) {
+        // Check if the user exists
+        if (!user) {
             return res.status(401).json({
                 status: "error",
                 message: "Invalid credentials",
             });
         }
-
-        const user = result.rows[0];
 
         // Compare the provided password with the stored hashed password
         const match = await bcrypt.compare(password, user.password_hash);
